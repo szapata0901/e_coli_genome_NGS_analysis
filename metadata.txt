@@ -1,0 +1,24 @@
+Submitting Centre
+SUB3350635
+Platform
+ILLUMINA
+Model
+Illumina MiSeq
+Read Count
+388,895
+Base Count
+116,668,500
+Library Layout
+PAIRED
+Library Strategy
+WGS
+Library Source
+GENOMIC
+Library Selection
+RANDOM
+Library Name
+control
+Broker Name
+NCBI
+
+https://www.ebi.ac.uk/ena/data/view/SRR6436961

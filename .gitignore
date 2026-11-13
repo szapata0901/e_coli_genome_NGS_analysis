@@ -1,0 +1,20 @@
+cat > .gitignore << 'EOF'
+# Datos crudos y procesados
+*.fastq
+*.fastq.gz
+*.fq
+*.tar.gz
+*.sra
+
+# Intermedios de ensambladores
+unicycler_output/spades_assembly/
+unicycler_output/*.gfa
+spades_output/corrected/
+spades_output/tmp/
+spades_output/K*/
+spades_output/misc/
+spades_output/*.fastg
+
+# fastp: conserva solo los reportes
+fastp_output/*.fastq
+EOF

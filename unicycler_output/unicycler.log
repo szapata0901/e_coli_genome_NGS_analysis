@@ -1,0 +1,152 @@
+
+Starting Unicycler (2025-05-23 10:46:33)
+----------------------------------------
+    Welcome to Unicycler, an assembly pipeline for bacterial genomes. Since you provided only short reads, Unicycler will essentially function as a SPAdes-optimiser. It will try many k-mer sizes, choose the best based on contig length and graph connectivity, and scaffold the graph using SPAdes repeat resolution.
+    For more information, please see https://github.com/rrwick/Unicycler
+
+Command: /home/szapata0901/anaconda3/bin/unicycler -1 SRR6436961_1.fastq -2 SRR6436961_2.fastq -o unicycler_output --spades_path spades
+
+Unicycler version: v0.5.1
+Using 8 threads
+
+Making output directory:
+  /home/szapata0901/e_coli_genome/unicycler_output
+
+Dependencies:
+  Program       Version   Status  
+  spades.py     4.2.0     good    
+  racon                   not used
+  makeblastdb   2.12.0+   good    
+  tblastn       2.12.0+   good    
+
+
+Choosing k-mer range for assembly (2025-05-23 10:46:34)
+-------------------------------------------------------
+    Unicycler chooses a k-mer range for SPAdes based on the length of the input reads. It uses a wide range of many k-mer sizes to maximise the chance of finding an ideal assembly.
+
+SPAdes maximum k-mer: 127
+Median read length: 150
+K-mer range: 27, 53, 71, 87, 99, 111, 119, 127
+
+
+SPAdes assemblies (2025-05-23 10:46:35)
+---------------------------------------
+    Unicycler now uses SPAdes to assemble the short reads. It scores the assembly graph for each k-mer using the number of contigs (fewer is better) and the number of dead ends (fewer is better). The score function is 1/(c*(d+2)), where c is the contig count and d is the dead end count.
+
+spades -o /home/szapata0901/e_coli_genome/unicycler_output/spades_assembly -k 27 --threads 8 --gfa11 --isolate -1 /home/szapata0901/e_coli_genome/SRR6436961_1.fastq -2 /home/szapata0901/e_coli_genome/SRR6436961_2.fastq -m 1024
+
+spades -o /home/szapata0901/e_coli_genome/unicycler_output/spades_assembly -k 27,53 --threads 8 --gfa11 --restart-from k27 -m 1024
+
+spades -o /home/szapata0901/e_coli_genome/unicycler_output/spades_assembly -k 27,53,71 --threads 8 --gfa11 --restart-from k53 -m 1024
+
+spades -o /home/szapata0901/e_coli_genome/unicycler_output/spades_assembly -k 27,53,71,87 --threads 8 --gfa11 --restart-from k71 -m 1024
+
+spades -o /home/szapata0901/e_coli_genome/unicycler_output/spades_assembly -k 27,53,71,87,99 --threads 8 --gfa11 --restart-from k87 -m 1024
+
+spades -o /home/szapata0901/e_coli_genome/unicycler_output/spades_assembly -k 27,53,71,87,99,111 --threads 8 --gfa11 --restart-from k99 -m 1024
+
+spades -o /home/szapata0901/e_coli_genome/unicycler_output/spades_assembly -k 27,53,71,87,99,111,119 --threads 8 --gfa11 --restart-from k111 -m 1024
+
+spades -o /home/szapata0901/e_coli_genome/unicycler_output/spades_assembly -k 27,53,71,87,99,111,119,127 --threads 8 --gfa11 --restart-from k119 -m 1024
+
+K-mer   Contigs   Dead ends   Score      
+   27                         too complex
+   53                         too complex
+   71     1,245          75      1.04e-05
+   87     1,641         430      1.41e-06
+   99       389          30      8.03e-05
+  111       301          35      8.98e-05
+  119       260          44      8.36e-05
+  127       122          63      1.26e-04 ← best
+
+Read depth filter: removed 0 contigs totalling 0 bp
+Deleting /home/szapata0901/e_coli_genome/unicycler_output/spades_assembly/
+
+
+Determining graph multiplicity (2025-05-23 10:56:11)
+----------------------------------------------------
+    Multiplicity is the number of times a sequence occurs in the underlying sequence. Single-copy contigs (those with a multiplicity of one, occurring only once in the underlying sequence) are particularly useful.
+
+Saving /home/szapata0901/e_coli_genome/unicycler_output/002_depth_filter.gfa
+
+
+Cleaning graph (2025-05-23 10:56:11)
+------------------------------------
+    Unicycler now performs various cleaning procedures on the graph to remove overlaps and simplify the graph structure. The end result is a graph ready for bridging.
+
+Graph overlaps removed
+
+Removed zero-length segments:
+    100, 114
+
+Merged small segments:
+    98, 101, 104, 108, 109, 110, 115, 116, 117, 118, 119, 121, 122
+
+Saving /home/szapata0901/e_coli_genome/unicycler_output/003_overlaps_removed.gfa
+
+    Unicycler now selects a set of anchor contigs from the single-copy contigs. These are the contigs which will be connected via bridges to form the final assembly.
+
+59 anchor segments (4,596,108 bp) out of 107 total segments (4,686,838 bp)
+
+
+Creating SPAdes contig bridges (2025-05-23 10:56:12)
+----------------------------------------------------
+    SPAdes uses paired-end information to perform repeat resolution (RR) and produce contigs from the assembly graph. SPAdes saves the graph paths corresponding to these contigs in the contigs.paths file. When one of these paths contains two or more anchor contigs, Unicycler can create a bridge from the path.
+
+                         Bridge
+Start    Path   End     quality
+   32     97    58         15.2
+   37    -97    -58        20.1
+   55           10         63.2
+
+
+Creating loop unrolling bridges (2025-05-23 10:56:12)
+-----------------------------------------------------
+    When a SPAdes contig path connects an anchor contig with the middle contig of a simple loop, Unicycler concludes that the sequences are contiguous (i.e. the loop is not a separate piece of DNA). It then uses the read depth of the middle and repeat contigs to guess the number of times to traverse the loop and makes a bridge.
+
+                                  Loop count   Loop count    Loop    Bridge
+Start   Repeat   Middle     End    by repeat    by middle   count   quality
+   32       97       58     -37         0.07         0.44       1      26.2
+
+
+Applying bridges (2025-05-23 10:56:12)
+--------------------------------------
+    Unicycler now applies to the graph in decreasing order of quality. This ensures that when multiple, contradictory bridges exist, the most supported option is used.
+
+Bridge type   Start → end   Path   Quality
+SPAdes           55 → 10            63.211
+SPAdes           37 → -58   -97     20.074
+SPAdes           32 → 58    97      15.200
+
+Saving /home/szapata0901/e_coli_genome/unicycler_output/004_bridges_applied.gfa
+
+
+Bridged assembly graph (2025-05-23 10:56:12)
+--------------------------------------------
+    The assembly is now mostly finished and no more structural changes will be made. Ideally the assembly graph should now have one contig per replicon and no erroneous contigs (i.e. a complete assembly). If there are more contigs, then the assembly is not complete.
+
+Saving /home/szapata0901/e_coli_genome/unicycler_output/005_final_clean.gfa
+
+Component   Segments   Links   Length      N50       Longest segment   Status    
+    total         87      89   4,668,386   132,967           413,895             
+        1         66      81   2,821,286   157,664           413,895   incomplete
+        2          1       0     237,677   237,677           237,677   incomplete
+        3          1       0     206,821   206,821           206,821   incomplete
+        4          9       8     647,333   126,047           203,624   incomplete
+        5          1       0     203,141   203,141           203,141   incomplete
+        6          1       0     117,348   117,348           117,348   incomplete
+        7          1       0     112,724   112,724           112,724   incomplete
+        8          1       0      98,764    98,764            98,764   incomplete
+        9          1       0      63,484    63,484            63,484   incomplete
+       10          1       0      57,012    57,012            57,012   incomplete
+       11          1       0      28,623    28,623            28,623   incomplete
+       12          1       0      28,189    28,189            28,189   incomplete
+       13          1       0      26,211    26,211            26,211   incomplete
+       14          1       0      19,773    19,773            19,773   incomplete
+
+
+Assembly complete (2025-05-23 10:56:12)
+---------------------------------------
+Saving /home/szapata0901/e_coli_genome/unicycler_output/assembly.gfa
+Saving /home/szapata0901/e_coli_genome/unicycler_output/assembly.fasta
+

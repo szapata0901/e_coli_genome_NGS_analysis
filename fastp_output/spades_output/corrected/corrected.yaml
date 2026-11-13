@@ -1,0 +1,9 @@
+- "left reads":
+  - "/home/szapata0901/e_coli_genome/fastp_output/spades_output/corrected/SRR6436961_100.0_0.cor.fastq.gz"
+  "number": !!int "1"
+  "orientation": "fr"
+  "right reads":
+  - "/home/szapata0901/e_coli_genome/fastp_output/spades_output/corrected/SRR6436961_200.0_0.cor.fastq.gz"
+  "single reads":
+  - "/home/szapata0901/e_coli_genome/fastp_output/spades_output/corrected/SRR6436961__unpaired00.0_0.cor.fastq.gz"
+  "type": "paired-end"

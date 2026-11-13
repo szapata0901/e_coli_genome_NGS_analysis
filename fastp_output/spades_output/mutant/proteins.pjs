@@ -1,0 +1,22 @@
+{
+  "version": "1.2",
+  "dbname": "proteins",
+  "dbtype": "Protein",
+  "db-version": 5,
+  "description": "mutant/proteins.faa",
+  "number-of-letters": 1329980,
+  "number-of-sequences": 4298,
+  "last-updated": "2025-05-26T10:41:00",
+  "number-of-volumes": 1,
+  "bytes-total": 2007371,
+  "bytes-to-cache": 1368767,
+  "files": [
+    "proteins.pdb",
+    "proteins.phr",
+    "proteins.pin",
+    "proteins.pot",
+    "proteins.psq",
+    "proteins.ptf",
+    "proteins.pto"
+  ]
+}

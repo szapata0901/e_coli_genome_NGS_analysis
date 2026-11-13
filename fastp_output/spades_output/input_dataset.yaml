@@ -1,0 +1,7 @@
+- "left reads":
+  - "/home/szapata0901/e_coli_genome/fastp_output/SRR6436961_1.fastq"
+  "number": !!int "1"
+  "orientation": "fr"
+  "right reads":
+  - "/home/szapata0901/e_coli_genome/fastp_output/SRR6436961_2.fastq"
+  "type": "paired-end"
